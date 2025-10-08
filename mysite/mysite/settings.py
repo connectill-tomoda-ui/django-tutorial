@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
+import dj_database_url
+from dotenv import load_dotenv
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,6 +29,11 @@ SECRET_KEY = 'django-insecure-gw4apcaik1^jbszodow=(g^(o1jv0im)++y18^wg6xxao(npb-
 DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "django-tutorial-k6lf.onrender.com"]
+
+# Allow this Render domain
+CSRF_TRUSTED_ORIGINS = [
+    "https://django-tutorial-k6lf.onrender.com",
+]
 
 
 # Application definition
@@ -75,11 +83,14 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+load_dotenv()
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True  # SupabaseはSSL必須
+    )
 }
 
 
